@@ -116,7 +116,7 @@ var Rice = (function() {
             return console.error(`There is no registered service called "${name}"`)
         }
 
-        rice.service[name] = RiceData._.services[name].apply(rice, args);
+        rice.service[name] = RiceData._.services[name].apply(null, args);
 
         if (rice.service[name].init) {
             rice.service[name].init();
@@ -138,7 +138,7 @@ var Rice = (function() {
                 }
             }
 
-            rice.initService.apply(this, arg)
+            rice.initService.apply(null, arg)
         }
     }
 
@@ -170,7 +170,7 @@ var Rice = (function() {
     rice.controller = function(name, ...args) {
         try {
             var control = RiceData._.controllers[name]
-            return control.apply(rice, args);
+            return control.apply(null, args);
         }
         catch (e) {
             if(!RiceData._.controllers[name]){
