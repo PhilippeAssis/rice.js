@@ -1,0 +1,23 @@
+{
+  "name": "ricejs",
+  "description": "Architecture for development of applications with javascript with high capacity of integration to diverse frameworks.",
+  "main": "gulpfile.js",
+  "authors": [
+    "Philippe Assis <assis@philippeassis.com>"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "Architeture",
+    "framework",
+    "rice",
+    "rice.js"
+  ],
+  "homepage": "https://github.com/PhilippeAssis/rice.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

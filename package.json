@@ -1,7 +1,7 @@
 {
   "name": "ricejs",
   "version": "0.0.1",
-  "description": "",
+  "description": "Architecture for development of applications with javascript with high capacity of integration to diverse frameworks.",
   "main": "gulpfile.js",
   "devDependencies": {
     "babel-cli": "^6.22.2",
@@ -17,17 +17,20 @@
     "gulp-pug": "^3.2.0",
     "gulp-stylus": "^2.6.0"
   },
-  "scripts": {
-    "test": "mocha"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PhilippeAssis/rice.js.git"
   },
-  "author": "",
+  "author": "Philippe Assis <assis@philippeassis.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/PhilippeAssis/rice.js/issues"
   },
-  "homepage": "https://github.com/PhilippeAssis/rice.js#readme"
+  "homepage": "https://github.com/PhilippeAssis/rice.js#readme",
+  "keywords": [
+    "Architeture",
+    "framework",
+    "rice",
+    "rice.js"
+  ]
 }
