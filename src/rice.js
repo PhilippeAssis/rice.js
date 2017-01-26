@@ -13,7 +13,8 @@ var Rice = (function() {
                 "test": {
                     "ok": true
                 }
-            }
+            },
+            "build":{}
         }
     }
 
@@ -83,7 +84,15 @@ var Rice = (function() {
     }
 
     rice.build = (name, build) => {
-        build.apply(rice)
+        rice._.build[name] = {}
+        
+        var done = build.apply(rice)
+        
+        if(done){
+            return window.rice = done;
+        }
+        
+        return rice;
     }
 
     rice.cache = (name, value) => {
