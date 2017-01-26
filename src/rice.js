@@ -78,11 +78,15 @@ var Rice = (function() {
 
     rice.add = (name, value) => {
         if (rice[name]) {
-            return console.error(`"Rice.${Name}" was not created. A key with this name already exists.`)
+            return console.error(`"Rice.${name}" was not created. A key with this name already exists.`)
         }
 
         rice[name] = value;
         return rice;
+    }
+    
+    rice.build = (name, build) => {
+        build.apply(rice)
     }
 
     rice.cache = (name, value) => {
