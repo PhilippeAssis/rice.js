@@ -226,9 +226,9 @@ function RiceCore() {
     return rice;
 }
 
-if (!module || !module.exports) {
-    var Rice = new RiceCore();
+if (typeof module == "object" && typeof module.exports == "object") {
+    module.exports = new RiceCore();
 }
 else {
-    module.exports = new RiceCore();
+    var Rice = new RiceCore();
 }

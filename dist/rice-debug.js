@@ -318,8 +318,8 @@ function RiceCore() {
     return rice;
 }
 
-if (!module || !module.exports) {
-    var Rice = new RiceCore();
-} else {
+if ((typeof module === "undefined" ? "undefined" : _typeof(module)) == "object" && _typeof(module.exports) == "object") {
     module.exports = new RiceCore();
+} else {
+    var Rice = new RiceCore();
 }
