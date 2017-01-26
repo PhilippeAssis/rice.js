@@ -1,34 +1,31 @@
-var RiceData = {
-    "_": {
-        "services": {},
-        "servicesLoaded": {},
-        "globals": {},
-        "cache": {},
-        "constructors": [],
-        "controllers": {},
-        "config": {
-            "test": {
-                "ok": true
-            }
-        }
-    }
-}
-
 var Rice = (function() {
     var rice = {
         "service": {},
-        "controller": {}
+        "controller": {},
+        "_": {
+            "services": {},
+            "servicesLoaded": {},
+            "globals": {},
+            "cache": {},
+            "constructors": [],
+            "controllers": {},
+            "config": {
+                "test": {
+                    "ok": true
+                }
+            }
+        }
     }
 
     rice.name = "Rice!"
 
     rice.addConstructor = (build) => {
-        RiceData._.constructors.push(build);
+        rice._.constructors.push(build);
     };
 
     rice.init = () => {
-        for (let name in RiceData._.constructors) {
-            let constructor = RiceData._.constructors[name].call(rice);
+        for (let name in rice._.constructors) {
+            let constructor = rice._.constructors[name].call(rice);
 
             if (constructor) {
                 rice = constructor;
@@ -40,11 +37,11 @@ var Rice = (function() {
 
     rice.addConfig = (name, value) => {
         function addConfig(name, value) {
-            if (RiceData._.config.mapping(name)) {
+            if (rice._.config.mapping(name)) {
                 return console.error(`There is already an item named "${name}" in config. To update this item use setConfig ()`)
             }
-            
-            RiceData._.config.mapping(name, value)
+
+            rice._.config.mapping(name, value)
         }
 
         if (typeof name == "object") {
@@ -59,7 +56,7 @@ var Rice = (function() {
 
     rice.setConfig = (name, value) => {
         function setConfig(name, value) {
-            RiceData._.config.mapping(name, value)
+            rice._.config.mapping(name, value)
         }
 
         if (typeof name == "object") {
@@ -73,7 +70,7 @@ var Rice = (function() {
     }
 
     rice.getConfig = (item) => {
-        return RiceData._.config.mapping(item)
+        return rice._.config.mapping(item)
     }
 
     rice.add = (name, value) => {
@@ -84,43 +81,43 @@ var Rice = (function() {
         rice[name] = value;
         return rice;
     }
-    
+
     rice.build = (name, build) => {
         build.apply(rice)
     }
 
     rice.cache = (name, value) => {
         if (!value) {
-            return RiceData._.cache[name] ? RiceData._.cache[name] : undefined;
+            return rice._.cache[name] ? rice._.cache[name] : undefined;
         }
         else {
-            RiceData._.cache[name] = value;
+            rice._.cache[name] = value;
         }
     }
 
     rice.global = (name, value) => {
         if (!value) {
-            return RiceData._.globals[name] ? RiceData._.globals[name] : undefined;
+            return rice._.globals[name] ? rice._.globals[name] : undefined;
         }
         else {
-            RiceData._.globals[name] = value;
+            rice._.globals[name] = value;
         }
     }
 
     rice.addService = (name, value) => {
-        if (RiceData._.services[name]) {
+        if (rice._.services[name]) {
             return console.error(`Can not create the "${name}" service. Another service with this name already exists`)
         }
 
-        RiceData._.services[name] = value;
+        rice._.services[name] = value;
     }
 
     rice.initService = (name, ...args) => {
-        if (!RiceData._.services[name]) {
+        if (!rice._.services[name]) {
             return console.error(`There is no registered service called "${name}"`)
         }
 
-        rice.service[name] = RiceData._.services[name].apply(null, args);
+        rice.service[name] = rice._.services[name].apply(null, args);
 
         if (rice.service[name].init) {
             rice.service[name].init();
@@ -128,7 +125,7 @@ var Rice = (function() {
     }
 
     rice.initAllServices = (args = {}) => {
-        for (let name in RiceData._.services) {
+        for (let name in rice._.services) {
             var arg = [name]
 
             if (args[name]) {
@@ -157,7 +154,7 @@ var Rice = (function() {
                 delete rice.service[name]
             }
 
-            delete RiceData._.services[name]
+            delete rice._.services[name]
         }
     }
 
@@ -168,19 +165,19 @@ var Rice = (function() {
     }
 
     rice.addController = function(name, controller) {
-        RiceData._.controllers[name] = controller;
+        rice._.controllers[name] = controller;
     }
 
     rice.controller = function(name, ...args) {
         try {
-            var control = RiceData._.controllers[name]
+            var control = rice._.controllers[name]
             return control.apply(null, args);
         }
         catch (e) {
-            if(!RiceData._.controllers[name]){
+            if (!rice._.controllers[name]) {
                 return console.error(`The controller "${name}" has not been registered. Use Rice.addController("${name}", function(){...}) to register it.`)
             }
-            else{
+            else {
                 console.error(e)
             }
         }
