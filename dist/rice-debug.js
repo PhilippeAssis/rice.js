@@ -90,39 +90,35 @@ String.prototype.replaceVar = function (search, replacement, suffix) {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var RiceData = {
-    "_": {
-        "services": {},
-        "servicesLoaded": {},
-        "globals": {},
-        "cache": {},
-        "constructors": [],
-        "controllers": {},
-        "config": {
-            "test": {
-                "ok": true
-            }
-        }
-    }
-};
-
 var Rice = function () {
-    var _this = this;
-
     var rice = {
         "service": {},
-        "controller": {}
+        "controller": {},
+        "_": {
+            "services": {},
+            "servicesLoaded": {},
+            "globals": {},
+            "cache": {},
+            "constructors": [],
+            "controllers": {},
+            "config": {
+                "test": {
+                    "ok": true
+                }
+            },
+            "build": {}
+        }
     };
 
     rice.name = "Rice!";
 
     rice.addConstructor = function (build) {
-        RiceData._.constructors.push(build);
+        rice._.constructors.push(build);
     };
 
     rice.init = function () {
-        for (var name in RiceData._.constructors) {
-            var _constructor = RiceData._.constructors[name].call(rice);
+        for (var name in rice._.constructors) {
+            var _constructor = rice._.constructors[name].call(rice);
 
             if (_constructor) {
                 rice = _constructor;
@@ -134,11 +130,11 @@ var Rice = function () {
 
     rice.addConfig = function (name, value) {
         function addConfig(name, value) {
-            if (RiceData._.config.mapping(name)) {
+            if (rice._.config.mapping(name)) {
                 return console.error("There is already an item named \"" + name + "\" in config. To update this item use setConfig ()");
             }
 
-            RiceData._.config.mapping(name, value);
+            rice._.config.mapping(name, value);
         }
 
         if ((typeof name === "undefined" ? "undefined" : _typeof(name)) == "object") {
@@ -152,7 +148,7 @@ var Rice = function () {
 
     rice.setConfig = function (name, value) {
         function setConfig(name, value) {
-            RiceData._.config.mapping(name, value);
+            rice._.config.mapping(name, value);
         }
 
         if ((typeof name === "undefined" ? "undefined" : _typeof(name)) == "object") {
@@ -165,40 +161,52 @@ var Rice = function () {
     };
 
     rice.getConfig = function (item) {
-        return RiceData._.config.mapping(item);
+        return rice._.config.mapping(item);
     };
 
     rice.add = function (name, value) {
         if (rice[name]) {
-            return console.error("\"Rice." + Name + "\" was not created. A key with this name already exists.");
+            return console.error("\"Rice." + name + "\" was not created. A key with this name already exists.");
         }
 
         rice[name] = value;
         return rice;
     };
 
+    rice.build = function (name, build) {
+        rice._.build[name] = {};
+
+        var done = build.apply(rice);
+
+        if (done) {
+            return window.rice = done;
+        }
+
+        return rice;
+    };
+
     rice.cache = function (name, value) {
         if (!value) {
-            return RiceData._.cache[name] ? RiceData._.cache[name] : undefined;
+            return rice._.cache[name] ? rice._.cache[name] : undefined;
         } else {
-            RiceData._.cache[name] = value;
+            rice._.cache[name] = value;
         }
     };
 
     rice.global = function (name, value) {
         if (!value) {
-            return RiceData._.globals[name] ? RiceData._.globals[name] : undefined;
+            return rice._.globals[name] ? rice._.globals[name] : undefined;
         } else {
-            RiceData._.globals[name] = value;
+            rice._.globals[name] = value;
         }
     };
 
     rice.addService = function (name, value) {
-        if (RiceData._.services[name]) {
+        if (rice._.services[name]) {
             return console.error("Can not create the \"" + name + "\" service. Another service with this name already exists");
         }
 
-        RiceData._.services[name] = value;
+        rice._.services[name] = value;
     };
 
     rice.initService = function (name) {
@@ -206,11 +214,11 @@ var Rice = function () {
             args[_key - 1] = arguments[_key];
         }
 
-        if (!RiceData._.services[name]) {
+        if (!rice._.services[name]) {
             return console.error("There is no registered service called \"" + name + "\"");
         }
 
-        rice.service[name] = RiceData._.services[name].apply(rice, args);
+        rice.service[name] = rice._.services[name].apply(null, args);
 
         if (rice.service[name].init) {
             rice.service[name].init();
@@ -220,7 +228,7 @@ var Rice = function () {
     rice.initAllServices = function () {
         var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-        for (var name in RiceData._.services) {
+        for (var name in rice._.services) {
             var arg = [name];
 
             if (args[name]) {
@@ -233,7 +241,7 @@ var Rice = function () {
                 }
             }
 
-            rice.initService.apply(_this, arg);
+            rice.initService.apply(null, arg);
         }
     };
 
@@ -247,7 +255,7 @@ var Rice = function () {
                 delete rice.service[name];
             }
 
-            delete RiceData._.services[name];
+            delete rice._.services[name];
         }
     };
 
@@ -258,20 +266,20 @@ var Rice = function () {
     };
 
     rice.addController = function (name, controller) {
-        RiceData._.controllers[name] = controller;
+        rice._.controllers[name] = controller;
     };
 
     rice.controller = function (name) {
         try {
-            var control = RiceData._.controllers[name];
+            var control = rice._.controllers[name];
 
             for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
                 args[_key2 - 1] = arguments[_key2];
             }
 
-            return control.apply(rice, args);
+            return control.apply(null, args);
         } catch (e) {
-            if (!RiceData._.controllers[name]) {
+            if (!rice._.controllers[name]) {
                 return console.error("The controller \"" + name + "\" has not been registered. Use Rice.addController(\"" + name + "\", function(){...}) to register it.");
             } else {
                 console.error(e);
