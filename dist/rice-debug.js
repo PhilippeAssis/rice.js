@@ -90,35 +90,42 @@ String.prototype.replaceVar = function (search, replacement, suffix) {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var Rice = function () {
+var __RiceData = {
+    "_": {
+        "services": {},
+        "servicesLoaded": {},
+        "globals": {},
+        "cache": {},
+        "constructors": [],
+        "controllers": {},
+        "config": {
+            "test": {
+                "ok": true
+            }
+        },
+        "build": {}
+    }
+};
+
+function RiceCore() {
     var rice = {
         "service": {},
-        "controller": {},
-        "_": {
-            "services": {},
-            "servicesLoaded": {},
-            "globals": {},
-            "cache": {},
-            "constructors": [],
-            "controllers": {},
-            "config": {
-                "test": {
-                    "ok": true
-                }
-            },
-            "build": {}
-        }
+        "controller": {}
     };
 
     rice.name = "Rice!";
 
+    rice._getData = function () {
+        return __RiceData;
+    };
+
     rice.addConstructor = function (build) {
-        rice._.constructors.push(build);
+        __RiceData._.constructors.push(build);
     };
 
     rice.init = function () {
-        for (var name in rice._.constructors) {
-            var _constructor = rice._.constructors[name].call(rice);
+        for (var name in __RiceData._.constructors) {
+            var _constructor = __RiceData._.constructors[name].call(rice);
 
             if (_constructor) {
                 rice = _constructor;
@@ -130,11 +137,11 @@ var Rice = function () {
 
     rice.addConfig = function (name, value) {
         function addConfig(name, value) {
-            if (rice._.config.mapping(name)) {
+            if (__RiceData._.config.mapping(name)) {
                 return console.error("There is already an item named \"" + name + "\" in config. To update this item use setConfig ()");
             }
 
-            rice._.config.mapping(name, value);
+            __RiceData._.config.mapping(name, value);
         }
 
         if ((typeof name === "undefined" ? "undefined" : _typeof(name)) == "object") {
@@ -148,7 +155,7 @@ var Rice = function () {
 
     rice.setConfig = function (name, value) {
         function setConfig(name, value) {
-            rice._.config.mapping(name, value);
+            __RiceData._.config.mapping(name, value);
         }
 
         if ((typeof name === "undefined" ? "undefined" : _typeof(name)) == "object") {
@@ -161,7 +168,7 @@ var Rice = function () {
     };
 
     rice.getConfig = function (item) {
-        return rice._.config.mapping(item);
+        return __RiceData._.config.mapping(item);
     };
 
     rice.add = function (name, value) {
@@ -174,12 +181,33 @@ var Rice = function () {
     };
 
     rice.build = function (name, build) {
-        rice._.build[name] = {};
+        if (!__RiceData._.build[name]) {
+            __RiceData._.build[name] = {};
+        }
+
+        var _rice = rice;
+
+        _rice.addData = function (key, value) {
+            if (!__RiceData._.build[name][key]) {
+                return __RiceData._.build[name][key] = value;
+            } else {
+                console.error("rice-" + name + ": \"" + key + "\" was not created. A key with this name already exists.");
+                return undefined;
+            }
+        };
+
+        _rice.setData = function (key, value) {
+            __RiceData._.build[name][key] = value;
+        };
+
+        _rice.getData = function (key) {
+            return __RiceData._.build[name][key];
+        };
 
         var done = build.apply(rice);
 
         if (done) {
-            return window.rice = done;
+            return Rice = done;
         }
 
         return rice;
@@ -187,26 +215,26 @@ var Rice = function () {
 
     rice.cache = function (name, value) {
         if (!value) {
-            return rice._.cache[name] ? rice._.cache[name] : undefined;
+            return __RiceData._.cache[name] ? __RiceData._.cache[name] : undefined;
         } else {
-            rice._.cache[name] = value;
+            __RiceData._.cache[name] = value;
         }
     };
 
     rice.global = function (name, value) {
         if (!value) {
-            return rice._.globals[name] ? rice._.globals[name] : undefined;
+            return __RiceData._.globals[name] ? __RiceData._.globals[name] : undefined;
         } else {
-            rice._.globals[name] = value;
+            __RiceData._.globals[name] = value;
         }
     };
 
     rice.addService = function (name, value) {
-        if (rice._.services[name]) {
+        if (__RiceData._.services[name]) {
             return console.error("Can not create the \"" + name + "\" service. Another service with this name already exists");
         }
 
-        rice._.services[name] = value;
+        __RiceData._.services[name] = value;
     };
 
     rice.initService = function (name) {
@@ -214,11 +242,11 @@ var Rice = function () {
             args[_key - 1] = arguments[_key];
         }
 
-        if (!rice._.services[name]) {
+        if (!__RiceData._.services[name]) {
             return console.error("There is no registered service called \"" + name + "\"");
         }
 
-        rice.service[name] = rice._.services[name].apply(null, args);
+        rice.service[name] = __RiceData._.services[name].apply(null, args);
 
         if (rice.service[name].init) {
             rice.service[name].init();
@@ -228,7 +256,7 @@ var Rice = function () {
     rice.initAllServices = function () {
         var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-        for (var name in rice._.services) {
+        for (var name in __RiceData._.services) {
             var arg = [name];
 
             if (args[name]) {
@@ -255,7 +283,7 @@ var Rice = function () {
                 delete rice.service[name];
             }
 
-            delete rice._.services[name];
+            delete __RiceData._.services[name];
         }
     };
 
@@ -266,12 +294,12 @@ var Rice = function () {
     };
 
     rice.addController = function (name, controller) {
-        rice._.controllers[name] = controller;
+        __RiceData._.controllers[name] = controller;
     };
 
     rice.controller = function (name) {
         try {
-            var control = rice._.controllers[name];
+            var control = __RiceData._.controllers[name];
 
             for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
                 args[_key2 - 1] = arguments[_key2];
@@ -279,7 +307,7 @@ var Rice = function () {
 
             return control.apply(null, args);
         } catch (e) {
-            if (!rice._.controllers[name]) {
+            if (!__RiceData._.controllers[name]) {
                 return console.error("The controller \"" + name + "\" has not been registered. Use Rice.addController(\"" + name + "\", function(){...}) to register it.");
             } else {
                 console.error(e);
@@ -288,4 +316,10 @@ var Rice = function () {
     };
 
     return rice;
-}();
+}
+
+if (!module || !module.exports) {
+    var Rice = new RiceCore();
+} else {
+    module.exports = new RiceCore();
+}
