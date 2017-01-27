@@ -45,11 +45,11 @@ function RiceCore() {
 
     rice.addConfig = (name, value) => {
         function addConfig(name, value) {
-            if (__RiceData._.config.mapping(name)) {
+            if (mapping(__RiceData._.config, name)) {
                 return console.error(`There is already an item named "${name}" in config. To update this item use setConfig ()`)
             }
 
-            __RiceData._.config.mapping(name, value)
+            mapping(__RiceData._.config, name, value)
         }
 
         if (typeof name == "object") {
@@ -64,7 +64,7 @@ function RiceCore() {
 
     rice.setConfig = (name, value) => {
         function setConfig(name, value) {
-            __RiceData._.config.mapping(name, value)
+            mapping(__RiceData._.config, name, value)
         }
 
         if (typeof name == "object") {
@@ -78,7 +78,7 @@ function RiceCore() {
     }
 
     rice.getConfig = (item) => {
-        return __RiceData._.config.mapping(item)
+        return mapping(__RiceData._.config, item)
     }
 
     rice.add = (name, value) => {
@@ -103,7 +103,7 @@ function RiceCore() {
             if (!__RiceData._.build[name][key]) {
                 return __RiceData._.build[name][key] = value;
             }
-            else{
+            else {
                 console.error(`rice-${name}: "${key}" was not created. A key with this name already exists.`)
                 return undefined;
             }

@@ -5,10 +5,10 @@
  * Ler: ({"test": {"ok": "no"}}).mapping("test.ok") // no
  * Escreve: ({"test": {"ok": "yes"}}).mapping("test.ok", false) // yes
  */
-Object.prototype.mapping = function(item, value) {
+function mapping(obj, item, value) {
     if (typeof item == "string") {
         var item = item.split(".")
-        var _this = this;
+        var _this = obj;
 
         if (!value) {
             for (let i = 0; i < item.length; i++) {
@@ -33,5 +33,5 @@ Object.prototype.mapping = function(item, value) {
         return _this;
     }
 
-    return this;
+    return obj;
 }
