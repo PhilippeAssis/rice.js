@@ -9,10 +9,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  * Ler: ({"test": {"ok": "no"}}).mapping("test.ok") // no
  * Escreve: ({"test": {"ok": "yes"}}).mapping("test.ok", false) // yes
  */
-Object.prototype.mapping = function (item, value) {
+function mapping(obj, item, value) {
     if (typeof item == "string") {
         var item = item.split(".");
-        var _this = this;
+        var _this = obj;
 
         if (!value) {
             for (var i = 0; i < item.length; i++) {
@@ -32,8 +32,8 @@ Object.prototype.mapping = function (item, value) {
         return _this;
     }
 
-    return this;
-};
+    return obj;
+}
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -137,11 +137,11 @@ function RiceCore() {
 
     rice.addConfig = function (name, value) {
         function addConfig(name, value) {
-            if (__RiceData._.config.mapping(name)) {
+            if (mapping(__RiceData._.config, name)) {
                 return console.error("There is already an item named \"" + name + "\" in config. To update this item use setConfig ()");
             }
 
-            __RiceData._.config.mapping(name, value);
+            mapping(__RiceData._.config, name, value);
         }
 
         if ((typeof name === "undefined" ? "undefined" : _typeof(name)) == "object") {
@@ -155,7 +155,7 @@ function RiceCore() {
 
     rice.setConfig = function (name, value) {
         function setConfig(name, value) {
-            __RiceData._.config.mapping(name, value);
+            mapping(__RiceData._.config, name, value);
         }
 
         if ((typeof name === "undefined" ? "undefined" : _typeof(name)) == "object") {
@@ -168,7 +168,7 @@ function RiceCore() {
     };
 
     rice.getConfig = function (item) {
-        return __RiceData._.config.mapping(item);
+        return mapping(__RiceData._.config, item);
     };
 
     rice.add = function (name, value) {
