@@ -1,8 +1,8 @@
 {
   "name": "ricejs",
-  "version": "0.1.0",
+  "version": "0.10.0",
   "description": "Architecture for development of applications with javascript with high capacity of integration to diverse frameworks.",
-  "main": "gulpfile.js",
+  "main": "dist/rice.min.js",
   "devDependencies": {
     "babel-cli": "^6.22.2",
     "babel-preset-env": "^1.1.8",
