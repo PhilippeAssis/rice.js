@@ -1,12 +1,7 @@
 {
   "name": "ricejs",
-<<<<<<< HEAD
   "version": "0.9.0",
   "description": "Ricejs is a frontend integration framework for javascript applications. Its main feature is the architecture of the project, allowing the developer to work with any of the thousands of javascript frameworks on the internet.",
-=======
-  "version": "0.10.0",
-  "description": "Architecture for development of applications with javascript with high capacity of integration to diverse frameworks.",
->>>>>>> 51e3391a5b2b97b5ede01a51b9f35cffa861434f
   "main": "dist/rice.min.js",
   "devDependencies": {
     "babel-cli": "^6.22.2",
