@@ -1,3 +1,6 @@
+# Ricejs
+#### "Matches everything!"
+
 ## What I am?
 Ricejs is a frontend integration framework for javascript applications. Its main feature is the architecture of the project, allowing the developer to work with any of the thousands of javascript frameworks on the internet.
 
