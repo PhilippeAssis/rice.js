@@ -30,7 +30,7 @@ function mapping(obj, item, value) {
             for (let i = 1; i < (item.length - 1); i++) {
                 result = {
                     [item[i]]: result
-                }
+                }.$mount('#app')
             }
 
             _this[item[(item.length - 1)]] = result;
@@ -164,13 +164,8 @@ module.exports = (function(appPath = "app") {
         }
     }
 
-    rice.import = (path, name, ...options) => {
-        var module = require(`./${appPath}/${path}/${name}`)
-        return module[name].apply(this, options)
-    }
-
     rice.controller = (name, ...options) => {
-        var module = require(`./${appPath}/controllers/${name}Controller.js`)
+        var module = require(`${name}Controller`)
         return module[name].apply(this, options)
     }
 
@@ -179,16 +174,16 @@ module.exports = (function(appPath = "app") {
             return __RiceData._.servicesLoaded[name]
         }
 
-        var module = require(`./${appPath}/services/${name}Service.js`)
+        var module = require(`${name}Service`)
         __RiceData._.servicesLoaded[name] = module[name].apply(this, options)
         return __RiceData._.servicesLoaded[name];
     }
 
     rice.lib = (name, ...options) => {
-        var module = require(`./${appPath}/libs/${name}.js`)
+        var module = require(`${name}`)
         return module[name].apply(this, options)
     }
-    
+
     rice.allServices = (method) => {
         for (let key in __RiceData._.servicesLoaded) {
             if (__RiceData._.servicesLoaded[key][method]) {
