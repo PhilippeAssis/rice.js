@@ -67,17 +67,18 @@ Traditionally you would get the value of page.name so `config.page.name`, and th
 
 ### addConfig, getConfig, setConfig
 #### add
-
 Let's add some data to our configuration:
 ```javascript
  Rice.addConfig("page.name", "home")
  Rice.addConfig("user.name", "Assis")
 ```
+#### set
 Now, let's modify them
 ```javascript
  Rice.setConfig("page.name", "contact")
  Rice.setConfig("user.name", "Philippe")
 ```
+#### get
 In the end, let's get it.
 ```javascript
  Rice.getConfig("page.name") // contact
