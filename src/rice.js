@@ -202,4 +202,3 @@ module.exports = (function(appPath = "app") {
 
     return rice;
 })()
-
