@@ -1,7 +1,7 @@
 {
   "name": "ricejs",
   "description": "Architecture for development of applications with javascript with high capacity of integration to diverse frameworks.",
-  "main": "dist/rice.min.js",
+  "main": "gulpfile.js",
   "authors": [
     "Philippe Assis <assis@philippeassis.com>"
   ],

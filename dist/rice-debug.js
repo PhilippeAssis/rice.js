@@ -1,23 +1,14 @@
 "use strict";
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var __RiceData = {
-    "_": {
-        "services": {},
-        "servicesLoaded": {},
-        "globals": {},
-        "cache": {},
-        "constructors": [],
-        "controllers": {},
-        "config": {},
-        "build": {}
-    }
-};
-
+/**
+ * Localiza/criar chaves em um objeto, lendo uma rota (em string) separada por pontos.
+ * Ler: ({"test": {"ok": "no"}}).mapping("test.ok") // no
+ * Escreve: ({"test": {"ok": "yes"}}).mapping("test.ok", false) // yes
+ */
 function mapping(obj, item, value) {
+    console.log(item);
     if (typeof item == "string") {
         var item = item.split(".");
         var _this = obj;
@@ -34,7 +25,9 @@ function mapping(obj, item, value) {
                 result = _defineProperty({}, item[_i], result);
             }
 
-            _this[item[item.length - 1]] = result;
+            var key = item[item.length - 1];
+
+            _this[key] = result[key];
         }
 
         return _this;
@@ -42,13 +35,86 @@ function mapping(obj, item, value) {
 
     return obj;
 }
+'use strict';
 
-module.exports = function () {
-    var _this2 = this;
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-    var appPath = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "app";
+String.prototype.replaceRecursive = function (search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
 
-    var rice = {};
+String.prototype.replaceAll = function (search, replacement) {
+    var target = this;
+
+    if (Array.isArray(search)) {
+        for (var key in search) {
+            target = target.replaceRecursive(search[key], replacement);
+        }
+
+        return target;
+    } else if ((typeof search === 'undefined' ? 'undefined' : _typeof(search)) == 'object') {
+        for (var key in search) {
+            target = target.replaceRecursive(key, search[key]);
+        }
+
+        return target;
+    } else {
+        return target.replaceRecursive(key, search[key]);
+    }
+};
+
+String.prototype.replaceVar = function (search, replacement, suffix) {
+    var target = this;
+
+    if (!suffix) {
+        suffix = "%";
+    }
+
+    if (Array.isArray(search)) {
+        for (var key in search) {
+            target = target.replaceAll(suffix + search[key] + suffix, replacement);
+        }
+
+        return target;
+    } else if ((typeof search === 'undefined' ? 'undefined' : _typeof(search)) == 'object') {
+        for (var key in search) {
+            target = target.replaceAll(suffix + key + suffix, search[key]);
+        }
+
+        return target;
+    } else {
+        return target.replaceAll(suffix + key + suffix, search[key]);
+    }
+};
+"use strict";
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var __RiceData = {
+    "_": {
+        "services": {},
+        "servicesLoaded": {},
+        "globals": {},
+        "cache": {},
+        "constructors": [],
+        "controllers": {},
+        "config": {
+            "test": {
+                "ok": true
+            }
+        },
+        "build": {}
+    }
+};
+
+function RiceCore() {
+    var rice = {
+        "service": {},
+        "controller": {}
+    };
+
+    rice.name = "Rice!";
 
     rice._getData = function () {
         return __RiceData;
@@ -142,7 +208,7 @@ module.exports = function () {
         var done = build.apply(rice);
 
         if (done) {
-            __RiceData._.constructors.push(done);
+            return Rice = done;
         }
 
         return rice;
@@ -164,56 +230,97 @@ module.exports = function () {
         }
     };
 
-    rice.import = function (path, name) {
-        for (var _len = arguments.length, options = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-            options[_key - 2] = arguments[_key];
+    rice.addService = function (name, value) {
+        if (__RiceData._.services[name]) {
+            return console.error("Can not create the \"" + name + "\" service. Another service with this name already exists");
         }
 
-        var module = require("./" + appPath + "/" + path + "/" + name);
-        return module[name].apply(_this2, options);
+        __RiceData._.services[name] = value;
+    };
+
+    rice.initService = function (name) {
+        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+            args[_key - 1] = arguments[_key];
+        }
+
+        if (!__RiceData._.services[name]) {
+            return console.error("There is no registered service called \"" + name + "\"");
+        }
+
+        rice.service[name] = __RiceData._.services[name].apply(null, args);
+
+        if (rice.service[name].init) {
+            rice.service[name].init();
+        }
+    };
+
+    rice.initAllServices = function () {
+        var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+        for (var name in __RiceData._.services) {
+            var arg = [name];
+
+            if (args[name]) {
+                if (Array.isArray(args[name])) {
+                    args[name].map(function (item) {
+                        arg.push(args[item]);
+                    });
+                } else {
+                    arg.push(args[name]);
+                }
+            }
+
+            rice.initService.apply(null, arg);
+        }
+    };
+
+    rice.stopService = function (name) {
+        if (rice.service[name]) {
+            if (rice.service[name].stop) {
+                rice.service[name].stop(function () {
+                    delete rice.service[name];
+                });
+            } else {
+                delete rice.service[name];
+            }
+
+            delete __RiceData._.services[name];
+        }
+    };
+
+    rice.stopAllServices = function (name) {
+        for (var _name in rice.service) {
+            rice.stopService(_name);
+        }
+    };
+
+    rice.addController = function (name, controller) {
+        __RiceData._.controllers[name] = controller;
     };
 
     rice.controller = function (name) {
-        for (var _len2 = arguments.length, options = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-            options[_key2 - 1] = arguments[_key2];
-        }
+        try {
+            var control = __RiceData._.controllers[name];
 
-        var module = require("./" + appPath + "/controllers/" + name + "Controller.js");
-        return module[name].apply(_this2, options);
-    };
+            for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+                args[_key2 - 1] = arguments[_key2];
+            }
 
-    rice.service = function (name) {
-        for (var _len3 = arguments.length, options = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-            options[_key3 - 1] = arguments[_key3];
-        }
-
-        if (__RiceData._.servicesLoaded[name]) {
-            return __RiceData._.servicesLoaded[name];
-        }
-
-        var module = require("./" + appPath + "/services/" + name + "Service.js");
-        __RiceData._.servicesLoaded[name] = module[name].apply(_this2, options);
-        return __RiceData._.servicesLoaded[name];
-    };
-
-    rice.lib = function (name) {
-        for (var _len4 = arguments.length, options = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
-            options[_key4 - 1] = arguments[_key4];
-        }
-
-        var module = require("./" + appPath + "/libs/" + name + ".js");
-        return module[name].apply(_this2, options);
-    };
-
-    rice.allServices = function (method) {
-        for (var key in __RiceData._.servicesLoaded) {
-            if (__RiceData._.servicesLoaded[key][method]) {
-                __RiceData._.servicesLoaded[key][method]();
+            return control.apply(null, args);
+        } catch (e) {
+            if (!__RiceData._.controllers[name]) {
+                return console.error("The controller \"" + name + "\" has not been registered. Use Rice.addController(\"" + name + "\", function(){...}) to register it.");
             } else {
-                console.error("The " + key + " service does not contain the start method");
+                console.error(e);
             }
         }
     };
 
     return rice;
-}();
+}
+
+if ((typeof module === "undefined" ? "undefined" : _typeof(module)) == "object" && _typeof(module.exports) == "object") {
+    module.exports = new RiceCore();
+} else {
+    var Rice = new RiceCore();
+}

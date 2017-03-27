@@ -1,8 +1,60 @@
 {
-  "name": "ricejs",
-  "version": "0.9.1",
-  "description": "Ricejs is a frontend integration framework for javascript applications. Its main feature is the architecture of the project, allowing the developer to work with any of the thousands of javascript frameworks on the internet.",
-  "main": "dist/rice.min.js",
+  "_args": [
+    [
+      {
+        "raw": "ricejs@latest",
+        "scope": null,
+        "escapedName": "ricejs",
+        "name": "ricejs",
+        "rawSpec": "latest",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/home/assis/Work/ipiranga/app"
+    ]
+  ],
+  "_from": "ricejs@latest",
+  "_id": "ricejs@0.1.0",
+  "_inCache": true,
+  "_location": "/ricejs",
+  "_nodeVersion": "4.6.1",
+  "_npmOperationalInternal": {
+    "host": "packages-18-east.internal.npmjs.com",
+    "tmp": "tmp/ricejs-0.1.0.tgz_1485476092146_0.36586894281208515"
+  },
+  "_npmUser": {
+    "name": "philippeassis",
+    "email": "assis@philippeassis.com"
+  },
+  "_npmVersion": "2.15.9",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "ricejs@latest",
+    "scope": null,
+    "escapedName": "ricejs",
+    "name": "ricejs",
+    "rawSpec": "latest",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ricejs/-/ricejs-0.1.0.tgz",
+  "_shasum": "d1ce207f4aeaa63e87f515d12634b5ca4453a951",
+  "_shrinkwrap": null,
+  "_spec": "ricejs@latest",
+  "_where": "/home/assis/Work/ipiranga/app",
+  "author": {
+    "name": "Philippe Assis",
+    "email": "assis@philippeassis.com"
+  },
+  "bugs": {
+    "url": "https://github.com/PhilippeAssis/rice.js/issues"
+  },
+  "dependencies": {},
+  "description": "Architecture for development of applications with javascript with high capacity of integration to diverse frameworks.",
   "devDependencies": {
     "babel-cli": "^6.22.2",
     "babel-preset-env": "^1.1.8",
@@ -17,20 +69,34 @@
     "gulp-pug": "^3.2.0",
     "gulp-stylus": "^2.6.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/PhilippeAssis/rice.js.git"
+  "directories": {},
+  "dist": {
+    "shasum": "d1ce207f4aeaa63e87f515d12634b5ca4453a951",
+    "tarball": "https://registry.npmjs.org/ricejs/-/ricejs-0.1.0.tgz"
   },
-  "author": "Philippe Assis <assis@philippeassis.com>",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/PhilippeAssis/rice.js/issues"
-  },
+  "gitHead": "70ca328256242dbc33e055c02779dfbda6c860ed",
   "homepage": "https://github.com/PhilippeAssis/rice.js#readme",
   "keywords": [
     "Architeture",
     "framework",
     "rice",
     "rice.js"
-  ]
+  ],
+  "license": "ISC",
+  "main": "gulpfile.js",
+  "maintainers": [
+    {
+      "name": "philippeassis",
+      "email": "assis@philippeassis.com"
+    }
+  ],
+  "name": "ricejs",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PhilippeAssis/rice.js.git"
+  },
+  "scripts": {},
+  "version": "0.1.1"
 }
