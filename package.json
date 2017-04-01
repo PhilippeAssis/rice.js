@@ -1,6 +1,6 @@
 {
   "name": "ricejs",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "description": "Architecture for development of applications with javascript with high capacity of integration to diverse frameworks.",
   "main": "gulpfile.js",
   "devDependencies": {

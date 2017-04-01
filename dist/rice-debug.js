@@ -86,6 +86,14 @@ String.prototype.replaceVar = function (search, replacement, suffix) {
         return target.replaceAll(suffix + key + suffix, search[key]);
     }
 };
+'use strict';
+
+function uuid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -213,12 +221,27 @@ function RiceCore() {
 		return rice;
 	};
 
-	rice.cache = function (name, value) {
-		if (!value) {
-			return __RiceData._.cache[name] ? __RiceData._.cache[name] : undefined;
-		} else {
-			__RiceData._.cache[name] = value;
+	rice.setCache = function (name, value) {
+		var id = uuid();
+		__RiceData._.cache[id + "_" + name] = value;
+		return id;
+	};
+
+	rice.getCache = function (id, name) {
+		if (name) {
+			return __RiceData._.cache[id + "_" + name];
 		}
+
+		return __RiceData._.cache[id];
+	};
+
+	rice.removeCache = function (id, name) {
+		if (name) {
+			delete __RiceData._.cache[id + "_" + name];
+			return;
+		}
+
+		delete __RiceData._.cache[id];
 	};
 
 	rice.global = function (name, value) {

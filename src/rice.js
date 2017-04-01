@@ -123,12 +123,27 @@ function RiceCore() {
 		return rice;
 	}
 
-	rice.cache = (name, value) => {
-		if (!value) {
-			return __RiceData._.cache[name] ? __RiceData._.cache[name] : undefined;
-		} else {
-			__RiceData._.cache[name] = value;
+	rice.setCache = (name, value) => {
+		var id = uuid();
+		__RiceData._.cache[`${id}_${name}`] = value;
+		return id;
+	}
+
+	rice.getCache = (id, name) => {
+		if (name) {
+			return __RiceData._.cache[`${id}_${name}`];
 		}
+
+		return __RiceData._.cache[id];
+	}
+
+	rice.removeCache = (id, name) => {
+		if (name) {
+			delete __RiceData._.cache[`${id}_${name}`];
+			return;
+		}
+
+		delete __RiceData._.cache[id];
 	}
 
 	rice.global = (name, value) => {
